@@ -37,7 +37,7 @@ def build_lemmatizer_with_historic(word, stemmer, stop_words):
         words_original = []
         words_stemmed = []
         for word in words:
-            if word not in stop_words:
+            if word not in stop_words and not word.isdigit():
                 stemmed = stemmer.stem(word)
                 words_original.append(word)
                 words_stemmed.append(stemmed)
@@ -63,7 +63,7 @@ for video in videos_words:
     words = []
     id_video = int(video['postId'])
     for word in video['wordList']:
-        if word not in stop_words:
+        if word not in stop_words and not word.isdigit():
             word = word.strip().lower()
             words.append(build_lemmatizer_with_historic(word, porter_stemmer, stop_words))
     videos_data[id_video]['wordList'] = words

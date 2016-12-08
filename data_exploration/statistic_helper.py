@@ -3,7 +3,6 @@ import pandas as pd
 import plotly.offline as po
 from plotly.graph_objs import Scatter, Layout
 import plotly.graph_objs as go
-po.offline.init_notebook_mode()
 
 def generate_bar_chart(frequency_token, number_of_word):
     token = [token_distri[0] for token_distri in frequency_token]

@@ -12,7 +12,9 @@ def build_graph(nodes, edges):
         graph.node[node]['pos'] = pos[node]
     return graph
 
-def build_edge_and_node_trace(node_trace, edge_trace, graph):
+def build_edge_and_node_trace(n_trace, e_trace, graph):
+    node_trace = n_trace
+    edge_trace = e_trace
     for edge in graph.edges():
         x0, y0 = graph.node[edge[0]]['pos']
         x1, y1 = graph.node[edge[1]]['pos']

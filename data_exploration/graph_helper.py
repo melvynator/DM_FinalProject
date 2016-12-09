@@ -1,29 +1,35 @@
 import networkx as nx
+import math
+from collections import Counter
 from plotly.graph_objs import *
 
+def build_graph(nodes, edges):
+    graph = nx.Graph()
+    graph.add_edges_from(edges)
+    graph.add_nodes_from(nodes)
+    pos=nx.fruchterman_reingold_layout(graph)
+    for node in graph.node:
+        graph.node[node]['pos'] = pos[node]
+    return graph
 
-def scatter_nodes(pos, labels=None, color=None, size=20, opacity=1):
-    # pos is the dict of node positions
-    # labels is a list  of labels of len(pos), to be displayed when hovering the mouse over the nodes
-    # color is the color for nodes. When it is set as None the Plotly default color is used
-    # size is the size of the dots representing the nodes
-    #opacity is a value between [0,1] defining the node color opacity
-    trace = Scatter(x=[], y=[],  mode='markers', marker=Marker(size=[]))
-    for k in pos:
-        trace['x'].append(pos[k][0])
-        trace['y'].append(pos[k][1])
-    attrib=dict(name='', text=labels , hoverinfo='text', opacity=opacity) # a dict of Plotly node attributes
-    trace=dict(trace, **attrib)# concatenate the dict trace and attrib
-    trace['marker']['size']=size
-    return trace
+def build_edge_and_node_trace(node_trace, edge_trace, graph):
+    for edge in graph.edges():
+        x0, y0 = graph.node[edge[0]]['pos']
+        x1, y1 = graph.node[edge[1]]['pos']
+        edge_trace['x'] += [x0, x1, None]
+        edge_trace['y'] += [y0, y1, None]
 
-def scatter_edges(G, pos, line_color=None, line_width=1):
-    trace = Scatter(x=[], y=[], mode='lines')
-    for edge in G.edges():
-        trace['x'] += [pos[edge[0]][0],pos[edge[1]][0], None]
-        trace['y'] += [pos[edge[0]][1],pos[edge[1]][1], None]
-        trace['hoverinfo']='none'
-        trace['line']['width']=line_width
-        if line_color is not None: # when it is None a default Plotly color is used
-            trace['line']['color']=line_color
-    return trace
+    for node in graph.nodes():
+        x, y = graph.node[node]['pos']
+        node_trace['x'].append(x)
+        node_trace['y'].append(y)
+
+    return node_trace, edge_trace
+
+
+def counter_cosine_similarity(c1, c2):
+    terms = set(c1).union(c2)
+    dotprod = sum(c1.get(k, 0) * c2.get(k, 0) for k in terms)
+    magA = math.sqrt(sum(c1.get(k, 0)**2 for k in terms))
+    magB = math.sqrt(sum(c2.get(k, 0)**2 for k in terms))
+    return dotprod / (magA * magB)

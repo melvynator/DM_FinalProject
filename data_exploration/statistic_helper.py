@@ -1,7 +1,8 @@
 import json
 import pandas as pd
+import itertools
 import plotly.offline as po
-from plotly.graph_objs import Scatter, Layout
+from plotly.graph_objs import *
 import plotly.graph_objs as go
 
 def generate_bar_chart(frequency_token, number_of_word):

@@ -29,5 +29,12 @@ cd ..
 ipython notebook data_exploration/data_exploration.ipynb
 ```
 
-Click run all in ipython Cell.
-Enjoy the chart!
+Click run all in ipython Cell and enjoy the chart!
+
+Finally, you can exit the virtualenv by:
+```
+deactivate
+```
+
+# Demo
+[DM_FinalProject](http://nbviewer.jupyter.org/github/melvynator/DM_FinalProject/blob/master/data_exploration/.ipynb_checkpoints/data_exploration-checkpoint.ipynb)

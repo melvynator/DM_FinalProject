@@ -22,11 +22,10 @@ python data_processing.py
 ```
 
 Back and open the data_exploration.
-(Remember run ipython in virtualenv mode or it will be global env.)
 
 ```
 cd ..
-ipython notebook data_exploration/data_exploration.ipynb
+jupyter notebook data_exploration/data_exploration.ipynb
 ```
 
 Click run all in ipython Cell and enjoy the chart!

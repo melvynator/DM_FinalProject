@@ -3,13 +3,17 @@ import math
 from collections import Counter
 from plotly.graph_objs import *
 
-def build_graph(nodes, edges):
+def build_graph(nodes, edges, coordinate=True, weighted_edge=False):
     graph = nx.Graph()
-    graph.add_edges_from(edges)
+    if weighted_edge:
+        graph.add_weighted_edges_from(edges)
+    else:
+        graph.add_edges_from(edges)
     graph.add_nodes_from(nodes)
-    pos=nx.fruchterman_reingold_layout(graph)
-    for node in graph.node:
-        graph.node[node]['pos'] = pos[node]
+    if coordinate:
+        pos=nx.fruchterman_reingold_layout(graph)
+        for node in graph.node:
+            graph.node[node]['pos'] = pos[node]
     return graph
 
 def build_edge_and_node_trace(n_trace, e_trace, graph):

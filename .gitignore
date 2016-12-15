@@ -88,5 +88,15 @@ env/
 # Spyder project settings
 .spyderproject
 
+# setting.py
+settings.py
+
 # Rope project settings
 .ropeproject
+
+# Mac
+.DS_Store
+
+# PyCharm
+.idea
+

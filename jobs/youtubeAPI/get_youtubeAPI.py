@@ -16,7 +16,7 @@ def get_video_id_from_link(youtube_link):
 	return video_id
 
 def get_youtube_categories_mapping_table():
-	with open(os.path.abspath(os.path.join(MYDIR, '../../data/YoutubeCategories.json.json')), 'r') as f:
+	with open(os.path.abspath(os.path.join(MYDIR, '../../data/YoutubeCategories.json')), 'r') as f:
 		return json.load(f)
 
 def get_youtube_video_info(youtube_video_id):
@@ -30,14 +30,14 @@ def get_youtube_video_info(youtube_video_id):
 		print "Something error in get_youtube_video_info: " + content
 
 def output_data(json_data):
-	with codecs.open(os.path.abspath(os.path.join(MYDIR, '../../data/data_crawled_with_youtube_info.json')), 'w', encoding='utf8') as handle:
+	with codecs.open(os.path.abspath(os.path.join(MYDIR, '../../data/data_crawled_with_youtube_info_array.json')), 'w', encoding='utf8') as handle:
 		handle.write(json.dumps(json_data, indent=4, sort_keys=True, ensure_ascii=False).encode('utf8'))
 
 def merge_data(origin_data, youtube_data):
 	content = json.loads(youtube_data)
 	if content["items"] == []:
 		# Youtube video have been blocked or deleted.
-		return None
+		return origin_data
 	snippet = content["items"][0]["snippet"]
 	statistics = content["items"][0]["statistics"]
 
@@ -46,6 +46,8 @@ def merge_data(origin_data, youtube_data):
 
 	origin_data.update(snippet)
 	origin_data.update({"statistics": statistics})
+	return origin_data
+
 
 def get_categories():
 	h = httplib2.Http(".cache")
@@ -54,16 +56,19 @@ def get_categories():
 	category_dic = {}
 	for key in data["items"]:
 		category_dic[key["id"]] = key["snippet"]["title"]
-	with open(os.path.abspath(os.path.join(MYDIR, '../../data/YoutubeCategories.json.json')), 'w') as outfile:
+	with open(os.path.abspath(os.path.join(MYDIR, '../../data/YoutubeCategories.json')), 'w') as outfile:
 		json.dump(category_dic, outfile)
 
 def get_video_info(all_json_data):
-	for video in all_json_data:
-		youtube_id = get_video_id_from_link(all_json_data[video]["youtube_link"])
+	output_json_array = []
+	for key in all_json_data:
+		youtube_id = get_video_id_from_link(all_json_data[key]["youtube_link"])
 		youtube_video_data = get_youtube_video_info(youtube_id)
 		# print youtube_video_data   # Decommnet this if need debug.
-		merge_data(all_json_data[video], youtube_video_data)
-	output_data(all_json_data)
+		one_video_data = merge_data(all_json_data[key], youtube_video_data)
+		one_video_data["postId"] = key
+		output_json_array.append(one_video_data)
+	output_data(output_json_array)
 
 
 get_categories()

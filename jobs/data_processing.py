@@ -44,7 +44,8 @@ def build_lemmatizer_with_historic(word, stemmer, stop_words):
                 try:
                     stemmed = stemmer.stem(word)
                 except AttributeError as e:
-                    stemmed = stemmer.lemmatize(word)
+                    stemmed = stemmer.lemmatize(stemmer.lemmatize(stemmer.lemmatize(stemmer.lemmatize(stemmer.lemmatize(stemmer.lemmatize(word),pos= 'n')
+                                                                                    ,pos='r'),pos='a'),pos='s'),pos='v')
                 words_original.append(word)
                 words_stemmed.append(stemmed)
         lemmatization_result['original'] = words_original
@@ -53,7 +54,8 @@ def build_lemmatizer_with_historic(word, stemmer, stop_words):
         try:
             stemmed = stemmer.stem(word)
         except AttributeError as e:
-            stemmed = stemmer.lemmatize(word)
+            stemmed = stemmer.lemmatize(stemmer.lemmatize(stemmer.lemmatize(stemmer.lemmatize(stemmer.lemmatize(stemmer.lemmatize(word),pos= 'n')
+                                                                                    ,pos='r'),pos='a'),pos='s'),pos='v')
         lemmatization_result['original'] = word
         lemmatization_result['stemmed'] = stemmed
     return lemmatization_result

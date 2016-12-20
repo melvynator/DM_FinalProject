@@ -1,6 +1,9 @@
 import nltk, json
 import pandas as pd
 from nltk.stem.porter import PorterStemmer
+from nltk.stem import WordNetLemmatizer
+
+# Changes by Frank: Added lemmatizer to generate better list
 
 def load_data_from_file(file_name):
     with open('../data/{0}'.format(file_name)) as data_file:
@@ -38,13 +41,21 @@ def build_lemmatizer_with_historic(word, stemmer, stop_words):
         words_stemmed = []
         for word in words:
             if word not in stop_words and not word.isdigit():
-                stemmed = stemmer.stem(word)
+                try:
+                    stemmed = stemmer.stem(word)
+                except AttributeError as e:
+                    stemmed = stemmer.lemmatize(stemmer.lemmatize(stemmer.lemmatize(stemmer.lemmatize(stemmer.lemmatize(stemmer.lemmatize(word),pos= 'n')
+                                                                                    ,pos='r'),pos='a'),pos='s'),pos='v')
                 words_original.append(word)
                 words_stemmed.append(stemmed)
         lemmatization_result['original'] = words_original
         lemmatization_result['stemmed'] = words_stemmed
     else:
-        stemmed = stemmer.stem(word)
+        try:
+            stemmed = stemmer.stem(word)
+        except AttributeError as e:
+            stemmed = stemmer.lemmatize(stemmer.lemmatize(stemmer.lemmatize(stemmer.lemmatize(stemmer.lemmatize(stemmer.lemmatize(word),pos= 'n')
+                                                                                    ,pos='r'),pos='a'),pos='s'),pos='v')
         lemmatization_result['original'] = word
         lemmatization_result['stemmed'] = stemmed
     return lemmatization_result
@@ -53,32 +64,45 @@ videos_words = load_data_from_file("videoData_vs_WordList.json")
 students1 = load_data_from_file("studentBehaviorInfo_1.json")
 students2 = load_data_from_file("studentBehaviorInfo_2.json")
 videos_data = load_data_from_file("videoDataInfo.csv")
+videos_data_lemmatize = load_data_from_file("videoDataInfo.csv")
 students = students1 + students2
 stop_words = set(nltk.corpus.stopwords.words("english"))
 
-
 porter_stemmer = PorterStemmer()
+lemmatizer = WordNetLemmatizer()
 stop_words = set(nltk.corpus.stopwords.words("english"))
 for video in videos_words:
     words = []
+    words_lemmatize = []
     id_video = int(video['postId'])
     for word in video['wordList']:
         if word not in stop_words and not word.isdigit():
             word = word.strip().lower()
             words.append(build_lemmatizer_with_historic(word, porter_stemmer, stop_words))
+            words_lemmatize.append(build_lemmatizer_with_historic(word, lemmatizer, stop_words))
     videos_data[id_video]['wordList'] = words
+    videos_data_lemmatize[id_video]['wordList'] = words_lemmatize
 
 
 cleaned_students = {}
+cleaned_students_lemmatize = {}
 for student in students:
     student_id = student['memberId']
     cleaned_students[student_id] = {}
+    cleaned_students_lemmatize[student_id] = {}
     cleaned_students[student_id]['chosenVideo'] = student['chosenVideo']
     cleaned_students[student_id]['listenScore'] = student['listenScore']
     cleaned_students[student_id]['vocabularyList'] = []
+    cleaned_students_lemmatize[student_id]['chosenVideo'] = student['chosenVideo']
+    cleaned_students_lemmatize[student_id]['listenScore'] = student['listenScore']
+    cleaned_students_lemmatize[student_id]['vocabularyList'] = []
     for word in student['vocabularyList']:
         stemmed = build_lemmatizer_with_historic(word['word'], porter_stemmer, stop_words)
+        stemmed_lemmatize = build_lemmatizer_with_historic(word['word'], lemmatizer, stop_words)
         cleaned_students[student_id]['vocabularyList'].append({'postId':word['postId'], 'word':stemmed})
+        cleaned_students_lemmatize[student_id]['vocabularyList'].append({'postId':word['postId'], 'word':stemmed_lemmatize})
 
 safe_data(videos_data, "video_data")
 safe_data(cleaned_students, "student_data")
+safe_data(videos_data_lemmatize, "video_data_lemmatize")
+safe_data(cleaned_students_lemmatize, "student_data_lemmatize")

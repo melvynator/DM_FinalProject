@@ -7,7 +7,8 @@ import plotly.graph_objs as go
 
 
 def generate_bar_chart(frequency_token, number_of_word, title=None):
-    token = ["Value: " + str(token_distri[0]) for token_distri in frequency_token]
+
+    token = ["Value: " + str(token_distri[0]) if isinstance(token_distri[0], int) else token_distri[0] for token_distri in frequency_token]
     frequency = [token_distri[1] for token_distri in frequency_token]
     distribution = [go.Bar(
             x=token[:number_of_word],
@@ -56,11 +57,16 @@ def generate_histograms(title, *args):
                 )
         data.append(trace)
     layout = go.Layout(
+        xaxis=dict(
+            autotick=True,
+            type='category'
+        ),
         title=title,
         barmode='group'
     )
     fig = go.Figure(data=data, layout=layout)
     po.iplot(fig)
+
 
 def generate_pie(dictionary, title):
     pie_values = []

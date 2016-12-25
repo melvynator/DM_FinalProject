@@ -53,13 +53,19 @@ def generate_histograms(title, *args):
                     x=values[index],
                     opacity=0.90,
                     name=label,
+                    xbins=dict(
+                        start=-2.5,
+                        end=102.5,
+                        size=5
+                    ),
                     histnorm='probability'
                 )
         data.append(trace)
     layout = go.Layout(
         xaxis=dict(
-            autotick=True,
-            type='category'
+            tick0=0,
+            dtick=5,
+ #           type='category'
         ),
         title=title,
         barmode='group'

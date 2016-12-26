@@ -139,3 +139,31 @@ def building_directed_weighted_grah(students):
         weighted_edges.append(edge + (float(weight),))
     graph.add_weighted_edges_from(weighted_edges)
     return graph
+
+def building_directed_weighted_grah_without_minus_one(students):
+    graph = nx.DiGraph()
+    edges = []
+    for student in students:
+        videos = student['chosenVideo']
+        if videos > 1:
+            user_path = []
+            for index, video in enumerate(videos):
+                scores = [record['score'] for record in student['listenScore'] if record['postId'] == video]
+                if index != (len(videos) - 1) and not all(x == -1 for x in scores):
+                    user_path.append((videos[index], videos[index + 1]))
+            edges += user_path
+
+    frequency_edge = {}
+    for edge in edges:
+        edge_string = str(edge)
+        if edge_string in frequency_edge:
+            frequency_edge[edge_string] += 1
+        else:
+            frequency_edge[edge_string] = 1
+
+    weighted_edges = []
+    for edge_string, weight in frequency_edge.iteritems():
+        edge = literal_eval(edge_string)
+        weighted_edges.append(edge + (float(weight),))
+    graph.add_weighted_edges_from(weighted_edges)
+    return graph

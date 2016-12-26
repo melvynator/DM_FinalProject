@@ -90,6 +90,20 @@ def generate_pie(dictionary, title):
     po.iplot(fig)
 
 
+def generate_boxplot(frequency1, frequency2):
+    trace0 = go.Box(
+        y=frequency1
+    )
+    
+    trace1 = go.Box(
+        y=frequency2
+    )
+    
+    data=[trace0, trace1]
+    
+    po.iplot(data)
+
+
 def load_data_from_file(file_name):
     data = None
     with open('../data/{0}'.format(file_name)) as data_file:
